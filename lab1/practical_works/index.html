@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+
+    
+    <title>Практическая работа 1 - Web-программирование</title>
+    
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/v4-shims.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//rsms.me/inter/inter.css' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/base.min.css" rel="stylesheet">
+    <link href="../../css/cinder.min.css" rel="stylesheet">
+
+    
+        
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/github.min.css">
+        
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            
+              <a class="navbar-brand" href="../..">Web-программирование</a>
+            
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Главная</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Лабораторные работы <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../lab1/">Лабораторная работа 1</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#1">Практическая работа 1</a></li>
+        <li class="first-level "><a href="#2">Практическая работа 2</a></li>
+        <li class="first-level "><a href="#3">Практическая работа 3</a></li>
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="1">Практическая работа 1</h1>
+<p>Создание базового приложения на FastAPI</p>
+<p>Для начала была выполнена установка и настройка окружения  </p>
+<pre><code class="language-shell">python -m venv venv
+source venv/Scripts/activate
+pip install fastapi[all]
+</code></pre>
+<p>Для выполнения базовых CRUD операций в файле <code>main.py</code> была создана временная база данных:  </p>
+<pre><code class="language-python">temp_bd = [
+{
+    &quot;id&quot;: 1,
+    &quot;race&quot;: &quot;director&quot;,
+    &quot;name&quot;: &quot;Мартынов Дмитрий&quot;,
+    &quot;level&quot;: 12,
+    &quot;profession&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;Влиятельный человек&quot;,
+        &quot;description&quot;: &quot;Эксперт по всем вопросам&quot;
+    },
+    &quot;skills&quot;:
+        [{
+            &quot;id&quot;: 1,
+            &quot;name&quot;: &quot;Купле-продажа компрессоров&quot;,
+            &quot;description&quot;: &quot;&quot;
+
+        },
+        {
+            &quot;id&quot;: 2,
+            &quot;name&quot;: &quot;Оценка имущества&quot;,
+            &quot;description&quot;: &quot;&quot;
+
+        }]
+},
+{
+    &quot;id&quot;: 2,
+    &quot;race&quot;: &quot;worker&quot;,
+    &quot;name&quot;: &quot;Андрей Косякин&quot;,
+    &quot;level&quot;: 12,
+    &quot;profession&quot;: {
+        &quot;id&quot;: 1,
+        &quot;title&quot;: &quot;Дельфист-гребец&quot;,
+        &quot;description&quot;: &quot;Уважаемый сотрудник&quot;
+    },
+    &quot;skills&quot;: []
+},
+]
+
+temp_professions = [
+    {&quot;id&quot;: 1, &quot;title&quot;: &quot;Влиятельный человек&quot;, &quot;description&quot;: &quot;Эксперт по всем вопросам&quot;},
+    {&quot;id&quot;: 2, &quot;title&quot;: &quot;Дельфист-гребец&quot;, &quot;description&quot;: &quot;Уважаемый сотрудник&quot;}
+]
+</code></pre>
+<p>Для сериализации и десериализации данных были созданы pydantic модели. 
+Они находятся в файле <code>models.py</code> и описывают структуру данных, хранящуюся в БД:  </p>
+<pre><code class="language-python">from enum import Enum
+from typing import Optional, List
+
+from pydantic import BaseModel
+
+class Profession(BaseModel):
+    id: int
+    title: str
+    description: str
+
+class Skill(BaseModel):
+    id: int
+    name: str
+    description: str
+
+
+class RaceType(Enum):
+    director = &quot;director&quot;
+    worker = &quot;worker&quot;
+    junior = &quot;junior&quot;
+
+class Warrior(BaseModel):
+    id: int
+    race: RaceType
+    name: str
+    level: int
+    profession: Profession
+    skills: Optional[List[Skill]] = []
+</code></pre>
+<p>Были созданы api эндпоинты для проведения базовых CRUD операций над войнами:</p>
+<pre><code class="language-python">@app.get(&quot;/warriors_list&quot;)
+def warriors_list() -&gt; tp.List[Warrior]:
+    return temp_bd
+
+
+@app.get(&quot;/warrior/{warrior_id}&quot;)
+def warriors_list(warrior_id: int) -&gt; List[Warrior]:
+    return [warrior for warrior in temp_bd if warrior.get(&quot;id&quot;) == warrior_id]
+
+
+@app.post(&quot;/warrior&quot;)
+def warriors_list(warrior: dict) -&gt; TypedDict('Response', {&quot;status&quot;: int, &quot;data&quot;: Warrior}):
+    temp_bd.append(warrior)
+    return {&quot;status&quot;: 200, &quot;data&quot;: warrior}
+
+
+@app.put(&quot;/warrior{warrior_id}&quot;)
+def warrior_update(warrior_id: int, warrior: dict) -&gt; List[Warrior]:
+    for i, war in enumerate(temp_bd):
+        if war.get(&quot;id&quot;) == warrior_id:
+            temp_bd[i] = warrior
+    return temp_bd
+
+
+@app.delete(&quot;/warrior/delete{warrior_id}&quot;)
+def warrior_delete(warrior_id: int):
+    for i, warrior in enumerate(temp_bd):
+        if warrior.get(&quot;id&quot;) == warrior_id:
+            temp_bd.pop(i)
+            break
+    return {&quot;status&quot;: 200, &quot;message&quot;: &quot;deleted&quot;}
+</code></pre>
+<p>По аналогии были созданы CRUD операции для профессий:</p>
+<pre><code class="language-python">@app.get(&quot;/professions&quot;)
+def get_professions() -&gt; tp.List[Profession]:
+    return temp_professions
+
+@app.get(&quot;/profession/{profession_id}&quot;)
+def get_profession(profession_id: int) -&gt; Profession:
+    for profession in temp_professions:
+        if profession.get(&quot;id&quot;) == profession_id:
+            return profession
+    raise HTTPException(status_code=404, detail=&quot;Профессия не найдена&quot;)
+
+@app.post(&quot;/profession&quot;)
+def create_profession(profession: Profession) -&gt; TypedDict('Response', {&quot;status&quot;: int, &quot;data&quot;: Profession}):
+    temp_professions.append(profession.dict())
+    return {&quot;status&quot;: 200, &quot;data&quot;: profession}
+
+@app.put(&quot;/profession/{profession_id}&quot;)
+def update_profession(profession_id: int, profession: Profession) -&gt; tp.List[Profession]:
+    for i, prof in enumerate(temp_professions):
+        if prof.get(&quot;id&quot;) == profession_id:
+            temp_professions[i] = profession.dict()
+            return temp_professions
+    raise HTTPException(status_code=404, detail=&quot;Профессия не найдена&quot;)
+
+@app.delete(&quot;/profession/{profession_id}&quot;)
+def delete_profession(profession_id: int):
+    for i, prof in enumerate(temp_professions):
+        if prof.get(&quot;id&quot;) == profession_id:
+            temp_professions.pop(i)
+            return {&quot;status&quot;: 200, &quot;message&quot;: &quot;deleted&quot;}
+    raise HTTPException(status_code=404, detail=&quot;Профессия не найдена&quot;)
+</code></pre>
+<hr />
+<h1 id="2">Практическая работа 2</h1>
+<p>Настройка базы данных, SQLModel</p>
+<p>Для добавления ORM в код необходимо установить соответствующие зависимости. Работать будем с базой данный <strong>PostgreSQL</strong> и библиотекой <strong>sqlmodel</strong>, которая "под капотом" использует SQLAlchemy. Нам потребуется установить драйвер для взаимодействия с PostgreSQL и sqlmodel.</p>
+<pre><code class="language-shell">pip install sqlmodel psycopg2-binary
+</code></pre>
+<p>В файле <code>connection.py</code> представлены данные для подключения к базе данных PostgreSQL:</p>
+<pre><code class="language-python">from sqlmodel import SQLModel, Session, create_engine
+
+db_url = &quot;postgresql://postgres:youshallnotpass@localhost:5432/warriors_db&quot;
+engine = create_engine(db_url, echo=True)
+
+
+def init_db():
+    SQLModel.metadata.create_all(engine)
+
+
+def get_session():
+    with Session(engine) as session:
+        yield session
+</code></pre>
+<p>Функция <code>get_session()</code> будет предоставлять сессию для каждого запроса. Все таблицы создаются при запуске приложения посредством функции <code>init_db()</code>:</p>
+<pre><code class="language-python">@asynccontextmanager
+async def lifespan(app: FastAPI):
+    init_db()
+    yield
+
+
+app = FastAPI(lifespan=lifespan)
+</code></pre>
+<p>Все модели в файле <code>models.py</code> были переписаны с pydantic на SQLModel:</p>
+<pre><code class="language-python">class RaceType(Enum):
+    director = &quot;director&quot;
+    worker = &quot;worker&quot;
+    junior = &quot;junior&quot;
+
+
+class SkillWarriorLink(SQLModel, table=True):
+    skill_id: Optional[int] = Field(
+        default=None, foreign_key=&quot;skill.id&quot;, primary_key=True
+    )
+    warrior_id: Optional[int] = Field(
+        default=None, foreign_key=&quot;warrior.id&quot;, primary_key=True
+    )
+
+
+class SkillDefault(SQLModel):
+    name: str
+    description: Optional[str] = &quot;&quot;
+
+
+class Skill(SkillDefault, table=True):
+    id: int = Field(default=None, primary_key=True)
+    warriors: Optional[List[&quot;Warrior&quot;]] = Relationship(
+        back_populates=&quot;skills&quot;, link_model=SkillWarriorLink
+    )
+
+
+class ProfessionDefault(SQLModel):
+    title: str
+    description: str
+
+
+class Profession(ProfessionDefault, table=True):
+    id: int = Field(default=None, primary_key=True)
+    warriors_prof: List[&quot;Warrior&quot;] = Relationship(back_populates=&quot;profession&quot;)
+
+
+class WarriorDefault(SQLModel):
+    race: RaceType
+    name: str
+    level: int
+    profession_id: Optional[int] = Field(default=None, foreign_key=&quot;profession.id&quot;)
+
+
+class Warrior(WarriorDefault, table=True):
+    id: int = Field(default=None, primary_key=True)
+    profession: Optional[Profession] = Relationship(
+        back_populates=&quot;warriors_prof&quot;,
+        sa_relationship_kwargs={&quot;lazy&quot;: &quot;joined&quot;},
+    )
+
+    skills: Optional[List[Skill]] = Relationship(
+        back_populates=&quot;warriors&quot;,
+        link_model=SkillWarriorLink,
+        sa_relationship_kwargs={&quot;uselist&quot;: True, &quot;lazy&quot;: &quot;selectin&quot;},
+    )
+
+
+class WarriorProfessions(WarriorDefault):
+    profession: Optional[Profession] = None
+
+
+class WarriorResponse(WarriorProfessions):
+    id: int
+    skills: List[Skill]
+</code></pre>
+<p>Теперь во всех эндпоинтах мы получаем / создаем / обновляем / удаляем объекты при помощи объекта сессии и храним все информацию в базе данных:</p>
+<pre><code class="language-python">@app.get(&quot;/warriors_list&quot;)
+def warriors_list(session=Depends(get_session)) -&gt; List[Warrior]:
+    return session.exec(select(Warrior)).all()
+
+
+@app.get(&quot;/warrior/{warrior_id}&quot;, response_model=WarriorResponse)
+def warriors_get(warrior_id: int, session=Depends(get_session)) -&gt; Warrior:
+    warrior = session.get(Warrior, warrior_id)
+    return warrior
+
+
+@app.post(&quot;/warrior&quot;)
+def warriors_create(warrior: WarriorDefault, session=Depends(get_session)):
+    warrior = Warrior.model_validate(warrior)
+    session.add(warrior)
+    session.commit()
+    session.refresh(warrior)
+    return {&quot;status&quot;: 200, &quot;data&quot;: warrior}
+
+
+@app.patch(&quot;/warrior/{warrior_id}&quot;)
+def warrior_update(warrior_id: int, warrior: WarriorDefault, session=Depends(get_session)) -&gt; WarriorDefault:
+    db_warrior = session.get(Warrior, warrior_id)
+    if not db_warrior:
+        raise HTTPException(status_code=404, detail=&quot;Warrior not found&quot;)
+
+    warrior_data = warrior.model_dump(exclude_unset=True)
+    for key, value in warrior_data.items():
+        setattr(db_warrior, key, value)
+
+    session.add(db_warrior)
+    session.commit()
+    session.refresh(db_warrior)
+    return db_warrior
+
+
+@app.delete(&quot;/warrior/{warrior_id}&quot;)
+def warrior_delete(warrior_id: int, session=Depends(get_session)):
+    warrior = session.get(Warrior, warrior_id)
+    if not warrior:
+        raise HTTPException(status_code=404, detail=&quot;Warrior not found&quot;)
+    session.delete(warrior)
+    session.commit()
+    return {&quot;status&quot;: 204}
+
+
+@app.get(&quot;/professions&quot;)
+def professions_list(session=Depends(get_session)) -&gt; List[Profession]:
+    return session.exec(select(Profession)).all()
+
+
+@app.get(&quot;/profession/{profession_id}&quot;)
+def profession_get(profession_id: int, session=Depends(get_session)) -&gt; Profession:
+    return session.get(Profession, profession_id)
+
+
+@app.post(&quot;/profession&quot;)
+def profession_create(prof: ProfessionDefault, session=Depends(get_session)):
+    prof = Profession.model_validate(prof)
+    session.add(prof)
+    session.commit()
+    session.refresh(prof)
+    return {&quot;status&quot;: 201, &quot;data&quot;: prof}
+</code></pre>
+<p>В рамках практической работы также были добавлены API эндпоинты для проведения CRUD операций над умениями воинов:</p>
+<pre><code class="language-python">@app.get(&quot;/skills&quot;)
+def skills_list(session=Depends(get_session)) -&gt; List[Skill]:
+    return session.exec(select(Skill)).all()
+
+
+@app.post(&quot;/skills&quot;)
+def skill_create(skill: SkillDefault, session=Depends(get_session)):
+    skill = Skill.model_validate(skill)
+    session.add(skill)
+    session.commit()
+    session.refresh(skill)
+    return {&quot;status&quot;: 201, &quot;data&quot;: skill}
+
+
+@app.patch(&quot;/skills/{skill_id}&quot;)
+def skill_update(
+    skill_id: int,
+    skill: SkillDefault,
+    session=Depends(get_session),
+) -&gt; SkillDefault:
+    db_skill = session.get(Skill, skill_id)
+    if not db_skill:
+        raise HTTPException(status_code=404, detail=&quot;Skill not found&quot;)
+
+    skill_data = skill.model_dump(exclude_unset=True)
+    for key, value in skill_data.items():
+        setattr(db_skill, key, value)
+
+    session.add(db_skill)
+    session.commit()
+    session.refresh(db_skill)
+    return db_skill
+
+
+@app.delete(&quot;/skills/{skill_id}&quot;)
+def skill_delete(skill_id: int, session=Depends(get_session)):
+    skill = session.get(Skill, skill_id)
+    if not skill:
+        raise HTTPException(status_code=404, detail=&quot;Skill not found&quot;)
+
+    session.delete(skill)
+    session.commit()
+    return {&quot;status&quot;: 204}
+</code></pre>
+<p>И эндпоинт для создания ассоциаций между воинами и умениями:</p>
+<pre><code class="language-python">@app.post(&quot;/skill_warriors&quot;)
+def warrior_slill_add(skill_warrior: SkillWarriorLink, session=Depends(get_session)):
+    skill = session.get(Skill, skill_warrior.skill_id)
+    if not skill:
+        raise HTTPException(status_code=404, detail=&quot;Skill not found&quot;)
+
+    warrior = session.get(Warrior, skill_warrior.warrior_id)
+    if not warrior:
+        raise HTTPException(status_code=404, detail=&quot;Warrior not found&quot;)
+
+    if skill not in warrior.skills:
+        session.add(skill_warrior)
+        session.commit()
+
+    return {&quot;status&quot;: 204}
+</code></pre>
+<hr />
+<h1 id="3">Практическая работа 3</h1>
+<p>Создание миграции, env, gitignore</p>
+<p>В качестве инструмента миграций используем Alembic:</p>
+<pre><code class="language-shell">pip install alembic
+alembic init alembic
+</code></pre>
+<p>Где второй раз указывается alembic - название папки, в которой будут сохранены миграции.</p>
+<p>Так как мы используем sqlmodel, библиотеку необходимо импортировать в шаблоне генерации миграций:</p>
+<pre><code class="language-python">...
+from typing import Sequence, Union
+
+import sqlmodel # Добавили этот импорт
+from alembic import op
+import sqlalchemy as sa
+...
+</code></pre>
+<p>Теперь необходимо создать и использовать переменные окружения. Создадим <code>.env</code> файл в корне проекта, в него запишем данные для подключения к базе данных.</p>
+<p>Получить переменную окружения нам поможет библиотека <code>python-dotenv</code>:</p>
+<pre><code class="language-shell">pip install python-dotenv
+</code></pre>
+<p>Поскольку нельзя допускать утечки <code>.env</code> файла (и других ненужных файлов) в репозиторий, был создан <code>.gitignore</code> файл, 
+в котором прописаны все файлы и директории, которые нельзя загружать:</p>
+<pre><code>*.env
+
+venv/
+env/
+ENV/
+.venv/
+</code></pre>
+<p>Но для упрощения работы с приложением в будущем (вам или вашим коллегам) можно оставить <code>.env.example</code>, в котором будет храниться пример правильного env файла без чувствительных значений:</p>
+<pre><code>DB_ADMIN = postgresql://username:password@host:port/db_name
+</code></pre>
+<p>В файле <code>env.py</code> в папке alembic'а были внесены следующие изменения:</p>
+<pre><code class="language-python">from logging.config import fileConfig
+import os
+
+from dotenv import load_dotenv
+from sqlalchemy import engine_from_config
+from sqlalchemy import pool
+
+from alembic import context
+from sqlmodel import SQLModel
+from models import *
+
+load_dotenv()
+
+config = context.config
+if not config.get_main_option(&quot;sqlalchemy.url&quot;):
+    config.set_main_option(&quot;sqlalchemy.url&quot;, os.getenv(&quot;DB_ADMIN&quot;))
+
+if config.config_file_name is not None:
+    fileConfig(config.config_file_name)
+
+target_metadata = SQLModel.metadata
+</code></pre>
+<p>Здесь подгружаются переменные окружения из <code>.env</code> файла и устанавливается параметр <code>sqlalchemy.url</code> по ключу <code>DB_ADMIN</code>. Это указывает данные для подключения к базе данных, для которой будут выполняться миграции.</p>
+<p>В файле <code>connection.py</code> аналогично параметры для соединения с базой данных берутся из переменных окружения:</p>
+<pre><code class="language-python">import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+db_url = os.getenv('DB_ADMIN')
+engine = create_engine(db_url, echo=True)
+</code></pre>
+<p>В качестве теста в модель SkillWarriorLink был добавлен атрибут level. Для создания миграции необходимо выполнить:</p>
+<pre><code class="language-shell">alembic revision --autogenerate -m &quot;skill added&quot;
+</code></pre>
+<p>А для применения миграции нужно выполнить:</p>
+<pre><code class="language-shell">alembic upgrade head
+</code></pre></div>
+        
+        
+    </div>
+
+    
+      <footer class="col-md-12 text-center">
+          
+          
+            <hr>
+            <p>
+            <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</small>
+            </p>
+          
+
+          
+          
+      </footer>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+
+    
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+        
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    <script>var base_url = "../.."</script>
+    
+    <script src="../../js/base.js"></script>
+    <script src="../../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+
+</html>

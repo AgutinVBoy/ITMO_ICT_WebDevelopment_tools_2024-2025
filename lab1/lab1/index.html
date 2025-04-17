@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+
+    
+    <title>Лабораторная работа 1 - Web-программирование</title>
+    
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/v4-shims.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//rsms.me/inter/inter.css' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/base.min.css" rel="stylesheet">
+    <link href="../../css/cinder.min.css" rel="stylesheet">
+
+    
+        
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/github.min.css">
+        
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            
+              <a class="navbar-brand" href="../..">Web-программирование</a>
+            
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Главная</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Лабораторные работы <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li class="active">
+    <a href="./">Лабораторная работа 1</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../..">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="next" >
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#no1-fastapi">Лабораторная работа №1. Реализация серверного приложения FastAPI.</a></li>
+            <li class="second-level"><a href="#_1">Реализация приложения</a></li>
+                
+                <li class="third-level"><a href="#_2">Конфиг</a></li>
+                <li class="third-level"><a href="#_3">Авторизация и аутентификация</a></li>
+                <li class="third-level"><a href="#_4">База данных</a></li>
+                <li class="third-level"><a href="#_5">Валидации</a></li>
+                <li class="third-level"><a href="#_6">Зависимости</a></li>
+                <li class="third-level"><a href="#_7">Эндпоинты</a></li>
+                <li class="third-level"><a href="#_8">Миграции</a></li>
+            <li class="second-level"><a href="#_9">Итог</a></li>
+                
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="no1-fastapi">Лабораторная работа №1. Реализация серверного приложения FastAPI.</h1>
+<hr />
+<p>Практическая работа была описана <a href="../practical_works/">здесь</a>.</p>
+<hr />
+<h2 id="_1">Реализация приложения</h2>
+<p>В качестве темы было выбрано веб-приложение для поиска партнеров в путешествие.</p>
+<h3 id="_2">Конфиг</h3>
+<p>Для начала было принято решение создать конфиг файл, из которого можно будет получить все необходимые настройки приложения. Начиная от порта приложения и данными для подключения к PostgreSQL, заканчивая настройкой JWT токенов.</p>
+<pre><code class="language-python">import os
+from dotenv import load_dotenv
+from pydantic_settings import BaseSettings
+
+load_dotenv()
+
+
+class Settings(BaseSettings):
+    app_port: int = int(os.getenv(&quot;APP_PORT&quot;, 8000))
+
+    db_user: str = os.getenv(&quot;DB_USER&quot;, &quot;postgres&quot;)
+    db_password: str = os.getenv(&quot;DB_PASSWORD&quot;, &quot;postgres&quot;)
+    db_host: str = os.getenv(&quot;DB_HOST&quot;, &quot;localhost&quot;)
+    db_port: int = int(os.getenv(&quot;DB_PORT&quot;, 5432))
+    db_name: str = os.getenv(&quot;DB_NAME&quot;, &quot;postgres&quot;)
+
+    jwt_secret: str = os.getenv(&quot;JWT_SECRET&quot;, &quot;Y0u_$H411_HoT_pAS$&quot;)
+    jwt_algorithm: str = os.getenv(&quot;JWT_ALGORITHM&quot;, &quot;HS256&quot;)
+    access_token_expire_minutes: int = int(os.getenv(&quot;ACCESS_TOKEN_EXPIRE_MINUTES&quot;, 30))
+
+    class Config:
+        env_file = &quot;.env&quot;
+
+
+settings = Settings()
+</code></pre>
+<p>Данные загружаются из <code>.env</code> файла. В дальнейшем можно будет импортировать settings из любой части кода и получить эти переменные.</p>
+<h3 id="_3">Авторизация и аутентификация</h3>
+<p>Дальше было принято решение придумать, как защитить пользователей. Воспользуемся обычными JWT токенами.<br />
+Нам потребуются библиотеки PyJWT (для работы с JWT токенами) и bcrypt (для хеширования паролей со случайной солью для каждого пользователя).</p>
+<pre><code class="language-shell">pip install pyjwt bcrypt
+</code></pre>
+<p>Был создан файл <code>core/auth.py</code>, который отвечает за безопасность, авторизацию и валидацию паролей.  </p>
+<pre><code class="language-python">def create_access_token(user_id: uuid.UUID) -&gt; str:
+    expire = datetime.utcnow() + timedelta(minutes=settings.access_token_expire_minutes)
+    payload = {
+        &quot;sub&quot;: str(user_id),
+        &quot;exp&quot;: expire
+    }
+    token = jwt.encode(payload, settings.jwt_secret, algorithm=settings.jwt_algorithm)
+    return token
+
+
+def validate_access_token(token: str) -&gt; tp.Optional[uuid.UUID]:
+    try:
+        payload = jwt.decode(token, settings.jwt_secret, algorithms=[settings.jwt_algorithm])
+        sub = payload.get(&quot;sub&quot;)
+        if not sub:
+            return None
+        return uuid.UUID(sub)
+    except (jwt.ExpiredSignatureError, jwt.InvalidTokenError, ValueError):
+        return None
+</code></pre>
+<p>Функция <code>create_access_token</code> генерирует jwt токен для определённого пользователя. В полезную нагрузку входит id пользователя и время жизни токена. JWT secret, алгоритм шифрования и время жизни токена хранится в конфиге приложения.<br />
+Функция <code>validate_access_token</code> проверяет, чтобы полученный токен был валидным. То есть имел корректную сигнатуру и не был просроченным. В случае успеха, возвращается id пользователя. В противном случае - None.  </p>
+<p>Далее идёт хеширование пароля и его валидация:</p>
+<pre><code class="language-python">def hash_password(password: str) -&gt; str:
+    salt = bcrypt.gensalt()
+    hashed = bcrypt.hashpw(password.encode(&quot;utf-8&quot;), salt)
+    return hashed.decode(&quot;utf-8&quot;)
+
+def verify_password(plain_password: str, hashed_password: str) -&gt; bool:
+    return bcrypt.checkpw(plain_password.encode(&quot;utf-8&quot;), hashed_password.encode(&quot;utf-8&quot;))
+</code></pre>
+<p>Функция <code>hash_password</code> генерирует случайную соль для каждого пароля и хеширует ей пароль. 
+Функция <code>verify_password</code> пробует зашифровать полученный пароль и сравнить его с хеш версией. Результатом будет ответ: совпадают ли пароли или нет.</p>
+<hr />
+<p>Далее нужно сделать модели базы данных, но мы рассмотрим их дальше.<br />
+Сейчас сделаем эндпоинты для авторизации и регистрации.</p>
+<pre><code class="language-python">@router.post(&quot;/register&quot;, status_code=status.HTTP_201_CREATED, response_model=UserAuthResponse)
+def register(user_data: UserRegistration, session: Session = Depends(get_session)):
+    error = Error()
+
+    validate_registration(user_data, error, session)
+
+    if error.is_error:
+        return JSONResponse(
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+            content={&quot;errors&quot;: error.errors},
+        )
+
+    hashed_password = hash_password(user_data.password)
+    new_user = User(
+        username=user_data.username,
+        email=user_data.email,
+        first_name=user_data.first_name,
+        last_name=user_data.last_name,
+        age=user_data.age,
+        description=user_data.description,
+        password_hash=hashed_password,
+    )
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+
+    token = auth.create_access_token(new_user.id)
+    user = UserResponse.model_validate(new_user)
+
+    return UserAuthResponse(user=user, access_token=token)
+
+
+@router.post(&quot;/login&quot;, response_model=UserAuthResponse)
+def login(user_data: UserLogin, session: Session = Depends(get_session)):
+    login_input = user_data.login.strip()
+    user = session.exec(select(User).where(or_(User.email == login_input, User.username == login_input))).first()
+
+    if not user or not auth.verify_password(user_data.password, user.password_hash):
+        return JSONResponse(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            content={&quot;error&quot;: &quot;Invalid credentials&quot;}
+        )
+
+    token = auth.create_access_token(user.id)
+    user = UserResponse.model_validate(user)
+    return UserAuthResponse(user=user, access_token=token)
+</code></pre>
+<p>При регистрации проверяются все введённые данные. Если они успешно прошли проверку, пользователь считается зарегистрированным. Ему возвращается токен и краткая о нём информация.  </p>
+<h3 id="_4">База данных</h3>
+<p>Состоит из следующих таблиц:</p>
+<pre><code class="language-python">class User(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    username: str = Field(index=True, unique=True, nullable=False)
+    email: str = Field(index=True, unique=True, nullable=False)
+    is_admin: bool = Field(default=False)
+    first_name: Optional[str] = Field(default=None)
+    last_name: Optional[str] = Field(default=None)
+    age: Optional[int] = Field(default=None)
+    description: Optional[str] = Field(default=None)
+    password_hash: str
+
+    created_trips: List[&quot;Trip&quot;] = Relationship(back_populates=&quot;creator&quot;)
+    trip_participations: List[&quot;TripParticipation&quot;] = Relationship(back_populates=&quot;user&quot;)
+    user_skills: List[&quot;UserSkill&quot;] = Relationship(back_populates=&quot;user&quot;)
+</code></pre>
+<p>Таблица содержит необходимые данные о пользователе, а также указывает на связи с другими таблицами.</p>
+<pre><code class="language-python">class Trip(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    title: str
+    description: str
+    departure: datetime
+    arrival: Optional[datetime] = None
+    departure_location: str
+    arrival_location: str
+    creator_id: uuid.UUID = Field(foreign_key=&quot;user.id&quot;)
+
+    creator: Optional[User] = Relationship(back_populates=&quot;created_trips&quot;)
+    participations: List[&quot;TripParticipation&quot;] = Relationship(back_populates=&quot;trip&quot;)
+
+class TripParticipation(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    user_id: uuid.UUID = Field(foreign_key=&quot;user.id&quot;)
+    trip_id: uuid.UUID = Field(foreign_key=&quot;trip.id&quot;)
+    role: TripRole = Field(
+        default=TripRole.passenger,
+        sa_column=Column(SAEnum(TripRole, name=&quot;trip_role&quot;, create_type=True), default=TripRole.passenger)
+    )
+    status: TripStatus = Field(
+        default=TripStatus.pending,
+        sa_column=Column(SAEnum(TripStatus, name=&quot;trip_status&quot;, create_type=True), default=TripStatus.pending)
+    )
+    joined_at: datetime = Field(default_factory=datetime.utcnow)
+
+    user: Optional[User] = Relationship(back_populates=&quot;trip_participations&quot;)
+    trip: Optional[Trip] = Relationship(back_populates=&quot;participations&quot;)
+</code></pre>
+<p>Таблица Trip содержит информацию о поездке, а таблица TripParticipation - об участниках этой поездки (связь многие-ко-многим).</p>
+<pre><code class="language-python">class Skill(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    name: str
+    description: Optional[str] = None
+    user_skills: List[&quot;UserSkill&quot;] = Relationship(back_populates=&quot;skill&quot;)
+
+class UserSkill(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    user_id: uuid.UUID = Field(foreign_key=&quot;user.id&quot;)
+    skill_id: uuid.UUID = Field(foreign_key=&quot;skill.id&quot;)
+    proficiency: int = Field(default=1, ge=1, le=10)
+
+    user: Optional[User] = Relationship(back_populates=&quot;user_skills&quot;)
+    skill: Optional[Skill] = Relationship(back_populates=&quot;user_skills&quot;)
+</code></pre>
+<p>Таблица Skill содержит информацию о навыках, которые могут быть у пользователей, а таблица UserSkill связывает навыки с пользователями (связь многие-ко-многим).</p>
+<h3 id="_5">Валидации</h3>
+<p>В коде есть несколько кастомных валидаций. Могут выполняться как все сразу вместе, так и по отдельности. Если не будет пройдена одна из вызванных проверок, операция будет отменена.</p>
+<p><strong>Проверка username</strong>:
+- длина не менее 5 символов;
+- содержит только латинские буквы, цифры, точку и нижнее подчёркивание;
+- не содержит спецсимволы в начале/конце и не содержит подряд несколько спецсимволов;
+- username уникален.</p>
+<p><strong>Проверка email</strong>:
+- маску адреса электронной почты;
+- email уникален.</p>
+<p><strong>Проверка пароля</strong>:
+- длина не менее 8 символов;
+- содержит хотя бы одну заглавную букву;
+- содержит хотя бы одну строчную букву;
+- содержит хотя бы одну цифру.</p>
+<p><strong>Проверка возраста</strong>:
+- от 18 лет и старше</p>
+<h3 id="_6">Зависимости</h3>
+<p>Некоторые эндпоинты зависимы от определённых условий. Например, пользователь должен быть авторизован или быть администратором. Чтобы в каждом необходимом эндпоинте не дублировать множество строк кода, валидация была вынесена в "зависимости":</p>
+<pre><code class="language-python">security = HTTPBearer()
+
+def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    session: Session = Depends(get_session)
+):
+    token = credentials.credentials
+    user_id: uuid.UUID | None = validate_access_token(token)
+    if user_id is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED
+        )
+    user = session.exec(select(User).where(User.id == user_id)).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED
+        )
+    return user
+
+
+def admin_required(current_user: User = Depends(get_current_user)) -&gt; User:
+    if not current_user.is_admin:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail=&quot;Administrative privileges required.&quot;
+        )
+    return current_user
+</code></pre>
+<p>В дальнейшем можно ссылаться на необходимую зависимость напрямую в эндпоинте:</p>
+<pre><code class="language-python">@router.get(&quot;/{user_id}&quot;, response_model=UserResponse, dependencies=[Depends(admin_required)])
+def get_user_info(user_id: str, session: Session = Depends(get_session)):
+    ...
+</code></pre>
+<h3 id="_7">Эндпоинты</h3>
+<p>Были сделаны CRUD'ы для пользователей (их данных), отдельный эндпоинт для обновления пароля, получение определённого пользователя по id или всех пользователей сразу (admin only), авторизация и регистрация, CRUD'ы для поездки, возможность добавиться или покинуть поездку, а также поиск поездок по определённым параметрам.</p>
+<h3 id="_8">Миграции</h3>
+<p>По аналогии с практикой были настроены миграции. Некоторые из них были написаны во время выполнения лабораторной работы. Вместо хеша используется счётчик, чтобы версии миграций были более читабельные. </p>
+<h2 id="_9">Итог</h2>
+<p>Итоговая схема проекта:</p>
+<pre><code>Lab1/
+├── alembic
+│   ├── README
+│   ├── env.py
+│   ├── script.py.mako
+│   └── versions
+│       ├── 1_added_field_is_admin_to_user.py
+│       ├── 2_added_fields_first_name_and_last_name.py
+│       ├── 3_added_skills_to_skill_table.py
+│       └── 4_added_age_and_description_to_user.py
+├── alembic.ini
+├── app
+│   ├── config.py
+│   ├── core
+│   │   ├── auth.py
+│   │   └── validators.py
+│   ├── db
+│   │   ├── database.py
+│   │   └── models.py
+│   ├── dependencies
+│   │   ├── admin.py
+│   │   └── auth.py
+│   ├── main.py
+│   ├── routes
+│   │   ├── __init__.py
+│   │   ├── auth.py
+│   │   ├── trip.py
+│   │   └── user.py
+│   └── schemas
+│       ├── error.py
+│       ├── trip.py
+│       └── user.py
+├── docker-compose.yml
+└── requirements.txt
+</code></pre></div>
+        
+        
+    </div>
+
+    
+      <footer class="col-md-12 text-center">
+          
+          
+            <hr>
+            <p>
+            <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</small>
+            </p>
+          
+
+          
+          
+      </footer>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+
+    
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+        
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    <script>var base_url = "../.."</script>
+    
+    <script src="../../js/base.js"></script>
+    <script src="../../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+
+</html>
