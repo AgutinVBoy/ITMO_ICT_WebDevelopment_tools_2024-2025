@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    
+    
+    <link rel="shortcut icon" href="../../img/favicon.ico">
+
+    
+    <title>Лабораторная работа 2 - Web-программирование</title>
+    
+
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/all.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.12.0/css/v4-shims.css">
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/hack-font@3.3.0/build/web/hack.min.css">
+    <link href='//rsms.me/inter/inter.css' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,600,700&subset=latin-ext,latin' rel='stylesheet' type='text/css'>
+    <link href="../../css/bootstrap-custom.min.css" rel="stylesheet">
+    <link href="../../css/base.min.css" rel="stylesheet">
+    <link href="../../css/cinder.min.css" rel="stylesheet">
+
+    
+        
+        <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/styles/github.min.css">
+        
+    
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+            <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+        <![endif]-->
+
+    
+
+     
+</head>
+
+<body>
+
+    <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+
+            
+              <a class="navbar-brand" href="../..">Web-программирование</a>
+            
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li >
+                        <a href="../..">Главная</a>
+                    </li>
+                
+                
+                
+                    <li class="dropdown active">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">Лабораторные работы <b class="caret"></b></a>
+                        <ul class="dropdown-menu">
+                        
+                            
+<li >
+    <a href="../../lab1/lab1/">Лабораторная работа 1</a>
+</li>
+
+                        
+                            
+<li class="active">
+    <a href="./">Лабораторная работа 2</a>
+</li>
+
+                        
+                        </ul>
+                    </li>
+                
+                
+                </ul>
+
+            <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                            <i class="fas fa-search"></i> Search
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="../../lab1/lab1/">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li class="disabled">
+                        <a rel="next" >
+                            Next <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+    <div class="container">
+        
+        
+        <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+        <li class="first-level active"><a href="#2">Лабораторная работа 2. Потоки. Процессы. Асинхронность.</a></li>
+            <li class="second-level"><a href="#_1">Ход работы</a></li>
+                
+                <li class="third-level"><a href="#1">Задание 1</a></li>
+                <li class="third-level"><a href="#2_1">Задание 2</a></li>
+    </ul>
+</div></div>
+        <div class="col-md-9" role="main">
+
+<h1 id="2">Лабораторная работа 2. Потоки. Процессы. Асинхронность.</h1>
+<h2 id="_1">Ход работы</h2>
+<h3 id="1">Задание 1</h3>
+<h4 id="threading">threading</h4>
+<p>Файл <code>threading_code.py</code>:</p>
+<pre><code class="language-python">import threading
+import time
+
+N = 10**9
+PARTS = 5
+
+
+def calculate_range(start: int, end: int) -&gt; int:
+    return sum(range(start, end))
+
+
+def calculate_sum_threading() -&gt; int:
+    chunk_size = N // PARTS
+    threads = []
+    results = [0] * PARTS
+
+    def worker(idx, start, end):
+        results[idx] = calculate_range(start, end)
+
+    for i in range(PARTS):
+        start = i * chunk_size + 1
+        end = (i + 1) * chunk_size + 1
+        t = threading.Thread(target=worker, args=(i, start, end))
+        threads.append(t)
+        t.start()
+
+    for t in threads:
+        t.join()
+
+    return sum(results)
+
+
+if __name__ == &quot;__main__&quot;:
+    t0 = time.time()
+    result_thread = calculate_sum_threading()
+    t1 = time.time()
+    print(f&quot;Threading result: {result_thread}, time: {t1 - t0:.2f}s&quot;)
+</code></pre>
+<p>Результат выполнения:
+<img alt="" src="../assets/img.png" />  </p>
+<h4 id="multiprocessing">multiprocessing</h4>
+<p>Файл <code>multiprocessing_code.py</code>:</p>
+<pre><code class="language-python">import multiprocessing
+import time
+
+N = 10**9
+PARTS = 5
+
+
+def calculate_range(start: int, end: int) -&gt; int:
+    return sum(range(start, end))
+
+
+def calculate_sum_multiprocessing() -&gt; int:
+    chunk_size = N // PARTS
+    ranges = []
+    for i in range(PARTS):
+        start = i * chunk_size + 1
+        end = (i + 1) * chunk_size + 1
+        ranges.append((start, end))
+
+    with multiprocessing.Pool(PARTS) as pool:
+        results = pool.starmap(calculate_range, ranges)
+
+    return sum(results)
+
+
+if __name__ == &quot;__main__&quot;:
+    t0 = time.time()
+    result_multiprocessing = calculate_sum_multiprocessing()
+    t1 = time.time()
+    print(f&quot;Multiprocessing result: {result_multiprocessing}, time: {t1 - t0:.2f}s&quot;)
+</code></pre>
+<p>Результат выполнения:
+<img alt="" src="../assets/img_1.png" /></p>
+<h4 id="asyncio">asyncio</h4>
+<p>Файл <code>asyncio_code.py</code>:</p>
+<pre><code class="language-python">import asyncio
+import time
+
+N = 10**9
+PARTS = 5
+
+
+async def calculate_range(start: int, end: int) -&gt; int:
+    return sum(range(start, end))
+
+
+async def calculate_sum_asyncio() -&gt; int:
+    chunk_size = N // PARTS
+    tasks = []
+    for i in range(PARTS):
+        start = i * chunk_size + 1
+        end = (i + 1) * chunk_size + 1
+        tasks.append(calculate_range(start, end))
+
+    t0 = time.time()
+    results = await asyncio.gather(*tasks)
+    t1 = time.time()
+    result_asyncio = sum(results)
+    print(f&quot;Asyncio result: {result_asyncio}, time: {t1 - t0:.2f}s&quot;)
+
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(calculate_sum_asyncio())
+</code></pre>
+<p>Результат выполнения:
+<img alt="" src="../assets/img_2.png" /></p>
+<h4 id="_2">Итоговые результаты</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Подход</th>
+<th style="text-align: left;">Количество потоков/процессов/задач</th>
+<th style="text-align: left;">Время выполнения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Threading</strong></td>
+<td style="text-align: left;">5 потоков</td>
+<td style="text-align: left;">28.24 секунд</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Multiprocessing</strong></td>
+<td style="text-align: left;">5 процессов</td>
+<td style="text-align: left;">10.29 секунд</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Asyncio</strong></td>
+<td style="text-align: left;">5 задач</td>
+<td style="text-align: left;">27.96 секунд</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_3">Выводы</h4>
+<ul>
+<li>При задачах с высокой нагрузкой на CPU наибольший выигрыш даёт запуск нескольких процессов через модуль multiprocessing. Каждый процесс работает на своём ядре, что ускоряет вычисления.</li>
+<li>Механизмы потоков и корутин при чисто вычислительной нагрузке не улучшают производительность. Первый "тормозится" GIL, а второй основан на кооперативной многозадачности, а не на настоящем параллелизме.</li>
+</ul>
+<hr />
+<h3 id="2_1">Задание 2</h3>
+<p>Одним из требований задания был парсинг страниц для заполнения базы данных из ЛР1. Вариантом прошлой работы было создание сервиса для поиска попутчиков в поездку. Был найден сервис <code>team2.travel</code>, на котором пользователи создают запросы на совместную поездку куда-либо. Было выбрано 10 страниц для парсинга контента. Из каждой страницы извлекался заголовок и сохранялся в базу данных. Также извлекались данные пользователей и складывались в базу данных.</p>
+<p>Была переиспользована модель User и добавлена модель Page.</p>
+<pre><code class="language-python">import uuid
+from datetime import datetime
+from typing import Optional
+
+from sqlmodel import SQLModel, Field
+
+
+class User(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    username: str = Field(index=True, unique=True, nullable=False)
+    email: str = Field(index=True, unique=True, nullable=False)
+    is_admin: bool = Field(default=False)
+    first_name: Optional[str] = Field(default=None)
+    last_name: Optional[str] = Field(default=None)
+    age: Optional[int] = Field(default=None)
+    description: Optional[str] = Field(default=None)
+    password_hash: str
+
+
+class Page(SQLModel, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True, index=True)
+    url: str = Field(index=True, nullable=False)
+    title: Optional[str] = Field(default=None)
+    fetched_at: datetime = Field(default_factory=datetime.utcnow, nullable=False)
+</code></pre>
+<p>Для более надёжного сбора информации был выбран метод использовать api. Полученная информация собирается в модель и сохраняется в базе данных.</p>
+<h4 id="threading_1">threading</h4>
+<p>Результат выполнения:
+<img alt="" src="../assets/img_3.png" /></p>
+<h4 id="multiprocessing_1">multiprocessing</h4>
+<p>Результат выполнения:
+<img alt="" src="../assets/img_4.png" /></p>
+<h4 id="asyncio-aiohttp">asyncio + aiohttp</h4>
+<p>Результат выполнения:
+<img alt="" src="../assets/img_5.png" /></p>
+<h4 id="_4">Итоговые результаты</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;">Подход</th>
+<th style="text-align: left;">Количество потоков/процессов/задач</th>
+<th style="text-align: left;">Время выполнения</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><strong>Threading</strong></td>
+<td style="text-align: left;">4 потока</td>
+<td style="text-align: left;">4.39 секунд</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Multiprocessing</strong></td>
+<td style="text-align: left;">4 процесса</td>
+<td style="text-align: left;">5.28 секунд</td>
+</tr>
+<tr>
+<td style="text-align: left;"><strong>Asyncio</strong></td>
+<td style="text-align: left;">4 задачи</td>
+<td style="text-align: left;">4.71 секунд</td>
+</tr>
+</tbody>
+</table>
+<h4 id="_5">Выводы</h4>
+<ul>
+<li>При ограниченном числе сетевых обращений вполне достаточно использования потоков (threading).</li>
+<li>Если же требуется выполнить множество запросов, лучше применять asyncio — он обеспечивает высокую «лёгкость» и низкие накладные затраты.</li>
+<li>Модуль multiprocessing для лёгких сетевых операций избыточен: расходы на запуск процессов и межпроцессное взаимодействие перевешивают выигрыш.</li>
+</ul></div>
+        
+        
+    </div>
+
+    
+      <footer class="col-md-12 text-center">
+          
+          
+            <hr>
+            <p>
+            <small>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</small>
+            </p>
+          
+
+          
+          
+      </footer>
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script src="../../js/bootstrap-3.0.3.min.js"></script>
+
+    
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.18.0/build/highlight.min.js"></script>
+        
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    <script>var base_url = "../.."</script>
+    
+    <script src="../../js/base.js"></script>
+    <script src="../../search/main.js"></script>
+
+    <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="searchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="searchModalLabel">Search</h4>
+            </div>
+            <div class="modal-body">
+                <p>
+                    From here you can search these documents. Enter
+                    your search terms below.
+                </p>
+                <form>
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query" title="Type search term here">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div><div class="modal" id="mkdocs_keyboard_modal" tabindex="-1" role="dialog" aria-labelledby="keyboardModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="keyboardModalLabel">Keyboard Shortcuts</h4>
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th style="width: 20%;">Keys</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="help shortcut"><kbd>?</kbd></td>
+                    <td>Open this help</td>
+                  </tr>
+                  <tr>
+                    <td class="next shortcut"><kbd>n</kbd></td>
+                    <td>Next page</td>
+                  </tr>
+                  <tr>
+                    <td class="prev shortcut"><kbd>p</kbd></td>
+                    <td>Previous page</td>
+                  </tr>
+                  <tr>
+                    <td class="search shortcut"><kbd>s</kbd></td>
+                    <td>Search</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="modal-footer">
+            </div>
+        </div>
+    </div>
+</div>
+    </body>
+
+</html>
