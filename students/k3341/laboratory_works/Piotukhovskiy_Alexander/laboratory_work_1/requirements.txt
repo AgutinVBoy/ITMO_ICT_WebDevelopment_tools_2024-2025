@@ -53,3 +53,6 @@ ujson==5.10.0
 uvicorn==0.34.0
 watchfiles==1.0.4
 websockets==15.0.1
+
+pytest==8.3.4
+pytest-cov==6.0.0
